@@ -102,9 +102,10 @@ uint8_t* MemStack_ptr = MemStack_arr;
  * \param count Array length
  * \param size Size of one element in the array
  */
-uint8_t* MemStack_push_array(int count, int size) {
+#define MemStack_push_array(count, type) (type *)MemStack_push_array_((count)*sizeof(type))
+uint8_t* MemStack_push_array_(size_t size) {
     uint8_t* address = MemStack_ptr;
-    MemStack_ptr += count*size;
+    MemStack_ptr += size;
     return address;
 }
 
@@ -117,16 +118,14 @@ void run_tests_for_MG_stack() {
                 "MemStack_push_array(2, sizeof (*byte_array) "
                 "returns a pointer to the first address in MemStack_arr");
         uint8_t* expected = &MemStack_arr[0];
-        uint8_t* byte_array;
-        byte_array = MemStack_push_array(2, sizeof (*byte_array));
+        uint8_t* byte_array = MemStack_push_array(2, uint8_t);
         TEST_PTReq(byte_array, expected);
     }
     { // MemStack_push_array() advances the MemStack pointer
         puts("MemStack_push_array(2, sizeof (*byte_array) "
                 "advances the MemStack pointer by 2 bytes");
         uint8_t* expected = MemStack_ptr+2;
-        uint8_t* byte_array;
-        MemStack_push_array(2, sizeof (*byte_array));
+        MemStack_push_array(2, uint8_t);
         TEST_PTReq(MemStack_ptr,expected);
     }
 }
