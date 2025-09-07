@@ -6,3 +6,8 @@ build/main: src/main.c | build
 build: ; @mkdir build
 
 what-CC: ; @realpath `which $(CC)`
+
+.PHONY: tags
+tags:
+	ctags -R .
+	cscope -R -b
